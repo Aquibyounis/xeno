@@ -108,3 +108,11 @@
 .auth-switch span:hover {
     text-decoration: underline;
 }
+
+
+@media (max-width: 480px) {
+    .auth-card {
+        width: 70svw;
+        height: max-content;
+    }
+}
