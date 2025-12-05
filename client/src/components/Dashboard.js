@@ -18,6 +18,12 @@ function Dashboard({ user, shopDomain, onLogout }) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
+  // Helper to clear filters
+  const clearFilters = () => {
+      setStartDate('');
+      setEndDate('');
+  };
+
   const fetchStats = async () => {
     try {
       setLoading(true);
@@ -50,11 +56,29 @@ function Dashboard({ user, shopDomain, onLogout }) {
 
   if (loading && !stats) return <div className="dashboard-container">Loading...</div>;
 
+  // --- CHART DATA PREPARATION ---
+  // We need to group orders by date to get count AND amount
+  const salesMap = {};
+  // Initialize with 0 for all dates present in chartData (which comes from backend sorted)
+  stats?.chartData?.forEach(d => {
+      salesMap[d.date] = { amount: d.amount, count: 0 };
+  });
+
+  // Count orders per day from the full orders list
+  stats?.ordersList?.forEach(order => {
+      const dateStr = new Date(order.created_at_date).toISOString().split('T')[0];
+      if (salesMap[dateStr]) {
+          salesMap[dateStr].count += 1;
+      }
+  });
+
   const chartData = {
     labels: stats?.chartData?.map((d) => d.date) || [],
     datasets: [{
       label: 'Revenue',
       data: stats?.chartData?.map((d) => d.amount) || [],
+      // Store order counts in a custom property so tooltip can access it
+      orderCounts: stats?.chartData?.map((d) => salesMap[d.date]?.count || 0), 
       borderColor: '#008060',
       backgroundColor: (ctx) => {
         const gradient = ctx.chart.ctx.createLinearGradient(0,0,0,300);
@@ -67,6 +91,38 @@ function Dashboard({ user, shopDomain, onLogout }) {
     }]
   };
 
+  const chartOptions = {
+      maintainAspectRatio: false,
+      plugins: {
+          legend: { display: false },
+          tooltip: {
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              titleColor: '#000',
+              bodyColor: '#666',
+              borderColor: '#ddd',
+              borderWidth: 1,
+              padding: 10,
+              displayColors: false,
+              callbacks: {
+                  // Custom Label to show Revenue AND Order Count
+                  label: function(context) {
+                      const revenue = context.raw;
+                      // Access the custom orderCounts array we passed in dataset
+                      const count = context.dataset.orderCounts[context.dataIndex]; 
+                      return [
+                          `Revenue: $${revenue.toLocaleString()}`,
+                          `Orders: ${count}`
+                      ];
+                  }
+              }
+          }
+      },
+      interaction: {
+          mode: 'index',
+          intersect: false,
+      },
+  };
+
   return (
     <div className="dashboard-container">
       <Navbar currentView={view} setView={setView} onLogout={onLogout} user={user} />
@@ -74,14 +130,33 @@ function Dashboard({ user, shopDomain, onLogout }) {
       {view === 'dashboard' && (
           <>
             <div style={{display:'flex', justifyContent:'space-between', marginBottom:'20px'}}>
-                <div className="filter-bar" style={{margin:0}}>
-                    <span className="filter-label">📅 Period:</span>
+                <div className="filter-bar" style={{margin:0, display:'flex', alignItems:'center', gap:'10px'}}>
+                    <span className="filter-label"><i className="fa-regular fa-calendar"></i> Period:</span>
                     <input type="date" value={startDate} onChange={(e)=>setStartDate(e.target.value)} className="date-input"/>
                     <span>to</span>
                     <input type="date" value={endDate} onChange={(e)=>setEndDate(e.target.value)} className="date-input"/>
+                    
+                    {/* RESET BUTTON - Shows only if filters are active */}
+                    {(startDate || endDate) && (
+                        <button 
+                            onClick={clearFilters} 
+                            style={{
+                                background: '#f1f1f1', 
+                                border: '1px solid #ccc', 
+                                padding: '5px 10px', 
+                                borderRadius: '5px', 
+                                cursor: 'pointer',
+                                color: '#333',
+                                fontSize: '13px'
+                            }}
+                        >
+                            ✕ Clear
+                        </button>
+                    )}
                 </div>
                 <button onClick={handleSync} disabled={syncing} className="sync-btn">
-                    {syncing ? 'Syncing...' : '🔄 Sync Data'}
+                  <i className="fa-solid fa-rotate"></i>
+                    {syncing ? ' Syncing...' : ' Sync Data'}
                 </button>
             </div>
 
@@ -108,19 +183,19 @@ function Dashboard({ user, shopDomain, onLogout }) {
                 <div className="chart-card glass-panel" style={{height:'420px'}}>
                     <h3>Revenue Velocity</h3>
                     <div className="chart-container" style={{height:'340px'}}>
-                        <Line options={{maintainAspectRatio:false, plugins:{legend:{display:false}}}} data={chartData} />
+                        {/* Pass updated options */}
+                        <Line options={chartOptions} data={chartData} />
                     </div>
                 </div>
 
                 <div className="customers-card glass-panel">
-                    <h3>🏆 Top Customers</h3>
+                    <h3><i className="fa-regular fa-user"></i> Top Customers</h3>
                     <div className="table-responsive">
                         <table className="modern-table">
                             <tbody>
                                 {stats?.customersList?.slice(0, 5).map((c, i) => (
                                     <tr key={i}>
                                         <td>
-                                            {/* DISPLAYING FULL NAME HERE */}
                                             <div style={{fontWeight: '500'}}>
                                                 {c.first_name} {c.last_name || ''}
                                             </div>
@@ -140,7 +215,6 @@ function Dashboard({ user, shopDomain, onLogout }) {
           </>
       )}
 
-      {/* Pass Customers List AND Orders List to the Customers Component */}
       {view === 'transactions' && <Transactions orders={stats?.ordersList} />}
       {view === 'customers' && <Customers customers={stats?.customersList} orders={stats?.ordersList} />}
 
