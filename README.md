@@ -3,8 +3,8 @@
 A full-stack, multi-tenant solution to ingest, store, and visualize Shopify data for multiple stores with tenant isolation.
 
 Live Deployment  
-- Frontend: https://your-frontend-url.vercel.app  
-- Backend:  https://your-backend-url.onrender.com  
+- Frontend: https://xenoaquib.vercel.app/  
+- Backend:  https://xeno-backend-3ddp.onrender.com 
 - Demo Video: *[Link to your Loom/YouTube Video]*  
 
 ---

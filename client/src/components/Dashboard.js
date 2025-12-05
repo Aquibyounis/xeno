@@ -27,7 +27,7 @@ function Dashboard({ user, shopDomain, onLogout }) {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const baseUrl = 'http://localhost:5000/api/dashboard-stats';
+      const baseUrl = 'https://xeno-backend-3ddp.onrender.com/api/dashboard-stats';
       let url = `${baseUrl}?shop=${shopDomain}`;
       if (startDate && endDate) url += `&startDate=${startDate}&endDate=${endDate}`;
       
@@ -43,7 +43,7 @@ function Dashboard({ user, shopDomain, onLogout }) {
   const handleSync = async () => {
     setSyncing(true);
     try {
-      await axios.post('http://localhost:5000/api/ingest', { shop: shopDomain });
+      await axios.post('https://xeno-backend-3ddp.onrender.com/api/ingest', { shop: shopDomain });
       alert('Synced!');
       fetchStats();
     } catch (error) {
