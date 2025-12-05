@@ -143,7 +143,7 @@
 }
 
 .logout-btn:hover {
-    background: #fef2f2;
+    background: #3a0505;
     box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
 }
 
@@ -175,3 +175,107 @@
 .chart-card { flex: 2; height: 400px; }
 .customers-card { flex: 1; }
 .chart-container { height: 320px; position: relative; }
+
+
+/* -------------------------------------------------- */
+/* MOBILE RESPONSIVE DESIGN */
+/* -------------------------------------------------- */
+@media (max-width: 900px) {
+    .dashboard-container {
+        padding: 20px;
+    }
+
+    /* Stats grid becomes 1 column */
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Chart + Customers stack vertically */
+    .charts-grid {
+        flex-direction: column;
+    }
+
+    .chart-card, .customers-card {
+        height: auto !important;
+    }
+
+    .chart-container {
+        height: 260px !important;
+    }
+
+    /* Filter bar becomes full-width vertical */
+    .filter-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 60%;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .filter-bar input {
+        width: 80%;
+    }
+
+    /* Sync Button becomes mobile friendly */
+    .sync-btn {
+        width: 50%;
+        padding: 14px;
+        font-size: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Top bar with filters + sync button becomes vertical */
+    .dashboard-header,
+    .filter-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+
+    /* Table wrapper — horizontal scroll on small screens */
+    .table-responsive {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    table.modern-table {
+        min-width: 600px; /* prevents breaking layout */
+    }
+
+    /* Customers & Transactions heading layout */
+    .glass-panel h2 {
+        font-size: 20px;
+    }
+
+    /* Navbar mobile layout */
+    .navbar-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* EXTRA small screens */
+@media (max-width: 480px) {
+    .stat-number {
+        font-size: 26px;
+    }
+
+    .stat-card {
+        padding: 18px;
+    }
+
+    .sync-btn {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .chart-container {
+        height: 220px !important;
+    }
+
+    .date-input {
+        width: 100%;
+    }
+}

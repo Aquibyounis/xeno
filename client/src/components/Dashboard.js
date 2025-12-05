@@ -129,7 +129,7 @@ function Dashboard({ user, shopDomain, onLogout }) {
 
       {view === 'dashboard' && (
           <>
-            <div style={{display:'flex', justifyContent:'space-between', marginBottom:'20px'}}>
+            <div style={{display:'flex', justifyContent:'space-between', marginBottom:'20px', flexDirection:'column',gap:'10px', alignItems:'center'}}>
                 <div className="filter-bar" style={{margin:0, display:'flex', alignItems:'center', gap:'10px'}}>
                     <span className="filter-label"><i className="fa-regular fa-calendar"></i> Period:</span>
                     <input type="date" value={startDate} onChange={(e)=>setStartDate(e.target.value)} className="date-input"/>

@@ -1,0 +1,140 @@
+/* Base Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    margin-bottom: 30px;
+    border-radius: 16px;
+}
+
+/* -------------------- LEFT SECTION -------------------- */
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 32px;
+    height: 32px;
+    background: #008060;
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.brand {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1A1A1AFF;
+}
+
+/* -------------------- NAV LINKS -------------------- */
+.links {
+    display: flex;
+    gap: 10px;
+    background: #2A343DFF;
+    padding: 5px;
+    border-radius: 25px;
+}
+
+.link {
+    padding: 10px 20px;
+    border: none;
+    background: transparent;
+    color: aliceblue;
+    cursor: pointer;
+    border-radius: 25px;
+    font-weight: 400;
+    transition: all 0.2s;
+}
+
+.active-link {
+    padding: 10px 20px;
+    border: none;
+    background: white;
+    color: #008060;
+    cursor: pointer;
+    border-radius: 25px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* -------------------- USER SECTION -------------------- */
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.username {
+    font-weight: 600;
+    color: #333;
+}
+
+.logout-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 10px;
+    border: none;
+    background: #ff4d4d;
+    color: white;
+    cursor: pointer;
+}
+
+/* ------------------------------------------------------ */
+/* RESPONSIVE DESIGN */
+/* ------------------------------------------------------ */
+
+@media (max-width: 850px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 15px 20px;
+    }
+
+    .links {
+        width: 100%;
+        justify-content: space-between;
+        padding: 6px;
+    }
+
+    .links button {
+        flex: 1;
+        padding: 10px 0;
+        border-radius: 25px !important;
+    }
+
+    .user-section {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 500px) {
+    .navbar {
+        padding: 12px 16px;
+    }
+
+    .links button {
+        font-size: 14px;
+        padding: 8px 0;
+    }
+
+    .user-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .logout-btn {
+        width: 100%;
+    }
+}
