@@ -18,14 +18,14 @@ router.get('/dashboard-stats', async (req, res) => {
             orderFilter.where.created_at_date = { [Op.between]: [new Date(startDate), new Date(endDate)] };
         }
 
-        // 1. Totals
+        // 1. Calculate Totals
         const totalCustomers = await Customer.count(tenantFilter);
         const totalOrders = await Order.count(orderFilter);
         const totalRevenueResult = await Order.sum('total_price', orderFilter);
         const totalRevenue = totalRevenueResult || 0;
         const averageOrderValue = totalOrders > 0 ? (totalRevenue / totalOrders).toFixed(2) : 0;
 
-        // 2. FULL LISTS (This was missing or limited in your previous code)
+        // 2. Fetch Full Lists
         const customersList = await Customer.findAll({
             where: { shop_domain: shop },
             order: [['total_spent', 'DESC']],
@@ -34,9 +34,28 @@ router.get('/dashboard-stats', async (req, res) => {
         const ordersList = await Order.findAll({
             where: orderFilter.where,
             order: [['created_at_date', 'DESC']],
+            // --- FETCH EMAIL ---
+            attributes: ['shopify_id', 'total_price', 'created_at_date', 'customer_email']
         });
 
-        // 3. Chart Data
+        // 3. Top 5 Customers
+        const topCustomers = await Customer.findAll({
+            where: { shop_domain: shop },
+            limit: 5,
+            order: [['total_spent', 'DESC']],
+            attributes: ['first_name', 'email', 'total_spent']
+        });
+
+        // 4. Recent Orders
+        const recentOrders = await Order.findAll({
+            where: orderFilter.where,
+            limit: 5,
+            order: [['created_at_date', 'DESC']],
+            // --- FETCH EMAIL ---
+            attributes: ['shopify_id', 'total_price', 'created_at_date', 'customer_email']
+        });
+
+        // 5. Chart Data
         const salesByDate = {};
         ordersList.forEach(order => {
             const dateStr = new Date(order.created_at_date).toISOString().split('T')[0];
@@ -54,8 +73,10 @@ router.get('/dashboard-stats', async (req, res) => {
             totalOrders, 
             totalRevenue, 
             averageOrderValue, 
-            customersList, // <--- CRITICAL: Sending the full list for the Customers Tab
-            ordersList,    // <--- CRITICAL: Sending full orders for Transactions Tab
+            customersList, 
+            ordersList,    
+            topCustomers,
+            recentOrders,
             chartData 
         });
 

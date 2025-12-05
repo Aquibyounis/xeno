@@ -15,6 +15,12 @@ const Order = sequelize.define('Order', {
         type: DataTypes.DATE,
         allowNull: false
     },
+    // --- NEW FIELD: Store Customer Email ---
+    customer_email: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    // ---------------------------------------
     shop_domain: {
         type: DataTypes.STRING,
         allowNull: false

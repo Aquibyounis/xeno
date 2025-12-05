@@ -69,6 +69,9 @@ router.post('/ingest', async (req, res) => {
                 shopify_id: o.id,
                 total_price: o.total_price,
                 created_at_date: o.created_at,
+                // --- SAVE EMAIL FROM SHOPIFY DATA ---
+                customer_email: o.customer ? o.customer.email : 'Guest',
+                // ------------------------------------
                 shop_domain: cleanShopUrl
             });
         }
@@ -81,7 +84,6 @@ router.post('/ingest', async (req, res) => {
 
     } catch (error) {
         console.error('❌ Ingestion Error:', error.message);
-        // Better error logging to see exactly what URL failed
         if (error.response) {
             console.error('Data:', error.response.data);
             console.error('Status:', error.response.status);

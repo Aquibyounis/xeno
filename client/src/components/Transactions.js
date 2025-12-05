@@ -14,6 +14,7 @@ function Transactions({ orders }) {
                     <thead>
                         <tr>
                             <th>Order ID</th>
+                            <th>Customer Email</th> {/* Updated Header */}
                             <th>Date</th>
                             <th>Status</th>
                             <th style={{textAlign: 'right'}}>Amount</th>
@@ -23,12 +24,16 @@ function Transactions({ orders }) {
                         {orders?.map((o, i) => (
                             <tr key={i}>
                                 <td style={{fontFamily: 'monospace', color: '#555'}}>#{o.shopify_id}</td>
+                                {/* Display Email */}
+                                <td style={{color: '#008060', fontWeight: '500'}}>
+                                    {o.customer_email || 'Guest'}
+                                </td>
                                 <td>{new Date(o.created_at_date).toLocaleDateString()}</td>
                                 <td><span className="badge-success">Paid</span></td>
                                 <td style={{textAlign: 'right', fontWeight: '600'}}>${o.total_price}</td>
                             </tr>
                         ))}
-                        {(!orders?.length) && <tr><td colSpan="4" style={{textAlign: 'center', padding: '30px'}}>No transactions found</td></tr>}
+                        {(!orders?.length) && <tr><td colSpan="5" style={{textAlign: 'center', padding: '30px'}}>No transactions found</td></tr>}
                     </tbody>
                 </table>
             </div>

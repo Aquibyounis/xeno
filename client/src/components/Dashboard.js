@@ -85,7 +85,6 @@ function Dashboard({ user, shopDomain, onLogout }) {
                 </button>
             </div>
 
-            {/* METRICS ROW */}
             <div className="stats-grid">
                 <div className="stat-card">
                     <h3>Total Revenue</h3>
@@ -105,9 +104,7 @@ function Dashboard({ user, shopDomain, onLogout }) {
                 </div>
             </div>
 
-            {/* CHARTS ROW (Side by Side) */}
             <div className="charts-grid">
-                {/* 1. REVENUE CHART */}
                 <div className="chart-card glass-panel" style={{height:'420px'}}>
                     <h3>Revenue Velocity</h3>
                     <div className="chart-container" style={{height:'340px'}}>
@@ -115,17 +112,18 @@ function Dashboard({ user, shopDomain, onLogout }) {
                     </div>
                 </div>
 
-                {/* 2. TOP 5 CUSTOMERS LIST */}
                 <div className="customers-card glass-panel">
                     <h3>🏆 Top Customers</h3>
                     <div className="table-responsive">
                         <table className="modern-table">
                             <tbody>
-                                {/* We slice the full list to show only Top 5 here */}
                                 {stats?.customersList?.slice(0, 5).map((c, i) => (
                                     <tr key={i}>
                                         <td>
-                                            <div style={{fontWeight: '500'}}>{c.first_name || 'Guest'}</div>
+                                            {/* DISPLAYING FULL NAME HERE */}
+                                            <div style={{fontWeight: '500'}}>
+                                                {c.first_name} {c.last_name || ''}
+                                            </div>
                                             <div style={{fontSize: '12px', color: '#888'}}>{c.email}</div>
                                         </td>
                                         <td style={{textAlign: 'right', color: '#008060', fontWeight: 'bold'}}>
@@ -142,8 +140,9 @@ function Dashboard({ user, shopDomain, onLogout }) {
           </>
       )}
 
+      {/* Pass Customers List AND Orders List to the Customers Component */}
       {view === 'transactions' && <Transactions orders={stats?.ordersList} />}
-      {view === 'customers' && <Customers customers={stats?.customersList} />}
+      {view === 'customers' && <Customers customers={stats?.customersList} orders={stats?.ordersList} />}
 
     </div>
   );
